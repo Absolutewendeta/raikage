@@ -115,16 +115,13 @@ jobs:
         if: runner.os != 'Windows'
         run: |
           cd zig-out/bin
-          tar czf ${{ matrix.asset_name }}.tar.gz ${{ matrix.artifact_name }}
-          ls -lh ${{ matrix.asset_name }}.tar.gz
+          ./release-utils compress ${{ matrix.artifact_name }} ${{ matrix.asset_name }}.tar.gz
 
       - name: Compress binary (Windows)
         if: runner.os == 'Windows'
-        shell: pwsh
         run: |
           cd zig-out/bin
-          Compress-Archive -Path ${{ matrix.artifact_name }} -DestinationPath ${{ matrix.asset_name }}.zip
-          Get-ChildItem ${{ matrix.asset_name }}.zip
+          ./release-utils.exe compress ${{ matrix.artifact_name }} ${{ matrix.asset_name }}.zip
 
       - name: Upload Release Asset (Unix)
         if: runner.os != 'Windows'
@@ -152,8 +149,7 @@ jobs:
         if: runner.os == 'ubuntu-latest'
         run: |
           cd zig-out/bin
-          sha256sum ${{ matrix.asset_name }}.tar.gz > ${{ matrix.asset_name }}.tar.gz.sha256
-          cat ${{ matrix.asset_name }}.tar.gz.sha256
+          ./release-utils checksum ${{ matrix.asset_name }}.tar.gz ${{ matrix.asset_name }}.tar.gz.sha256
 
       - name: Upload checksum
         if: runner.os == 'ubuntu-latest'

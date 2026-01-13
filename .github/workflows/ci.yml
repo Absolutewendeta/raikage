@@ -27,9 +27,7 @@ jobs:
           version: ${{ matrix.zig-version }}
 
       - name: Verify Zig installation
-        run: |
-          zig version
-          zig env
+        run: zig build && ./zig-out/bin/ci-utils verify-install
 
       - name: Build project
         run: zig build
@@ -40,27 +38,13 @@ jobs:
       - name: Build examples
         run: zig build examples
 
-      - name: Run examples (Unix)
-        if: runner.os != 'Windows'
+      - name: Run examples
         run: |
-          zig build run-key_derivation > /dev/null 2>&1 || true
-          zig build run-file_hashing > /dev/null 2>&1 || true
-
-      - name: Run examples (Windows)
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          zig build run-key_derivation > $null 2>&1 || echo "Completed"
-          zig build run-file_hashing > $null 2>&1 || echo "Completed"
+          zig build run-key_derivation || true
+          zig build run-file_hashing || true
 
       - name: Check binary size
-        shell: bash
-        run: |
-          if [ -f "zig-out/bin/raikage" ]; then
-            ls -lh zig-out/bin/raikage
-          elif [ -f "zig-out/bin/raikage.exe" ]; then
-            ls -lh zig-out/bin/raikage.exe
-          fi
+        run: ./zig-out/bin/ci-utils check-binary-size
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -98,9 +82,7 @@ jobs:
           version: '0.15.2'
 
       - name: Run tests with leak detection
-        run: |
-          zig build test --summary all
-          echo "✅ No memory leaks detected"
+        run: zig build test --summary all
 
   cross-compile:
     name: Cross-Compilation Test
@@ -123,12 +105,10 @@ jobs:
           version: '0.15.2'
 
       - name: Cross-compile for ${{ matrix.target }}
-        run: |
-          zig build -Dtarget=${{ matrix.target }} -Doptimize=ReleaseSafe
+        run: zig build -Dtarget=${{ matrix.target }} -Doptimize=ReleaseSafe
 
       - name: Check binary size
-        run: |
-          ls -lh zig-out/bin/
+        run: ./zig-out/bin/ci-utils check-binary-size
 
   security-audit:
     name: Security Audit

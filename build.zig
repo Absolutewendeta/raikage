@@ -75,4 +75,46 @@ pub fn build(b: *std.Build) void {
         const run_example_step = b.step(b.fmt("run-{s}", .{example_name}), b.fmt("Run the {s} example", .{example_name}));
         run_example_step.dependOn(&run_example.step);
     }
+
+    // Scripts
+    const test_manual_script = b.addExecutable(.{
+        .name = "test-manual",
+        .root_module = b.createModule(.{
+            .root_source_file = b.path("scripts/test_manual.zig"),
+            .target = target,
+            .optimize = optimize,
+        }),
+    });
+
+    const install_test_manual = b.addInstallArtifact(test_manual_script, .{});
+    const run_test_manual = b.addRunArtifact(test_manual_script);
+    const test_manual_step = b.step("test-manual", "Run manual testing script (creates test files)");
+    test_manual_step.dependOn(&install_test_manual.step);
+    test_manual_step.dependOn(&run_test_manual.step);
+
+    // CI utilities
+    const ci_utils_script = b.addExecutable(.{
+        .name = "ci-utils",
+        .root_module = b.createModule(.{
+            .root_source_file = b.path("scripts/ci_utils.zig"),
+            .target = target,
+            .optimize = optimize,
+        }),
+    });
+
+    const install_ci_utils = b.addInstallArtifact(ci_utils_script, .{});
+    b.getInstallStep().dependOn(&install_ci_utils.step);
+
+    // Release utilities
+    const release_utils_script = b.addExecutable(.{
+        .name = "release-utils",
+        .root_module = b.createModule(.{
+            .root_source_file = b.path("scripts/release_utils.zig"),
+            .target = target,
+            .optimize = optimize,
+        }),
+    });
+
+    const install_release_utils = b.addInstallArtifact(release_utils_script, .{});
+    b.getInstallStep().dependOn(&install_release_utils.step);
 }
