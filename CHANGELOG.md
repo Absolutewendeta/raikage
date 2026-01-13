@@ -43,10 +43,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Examples directory with three working code samples:
+  - `key_derivation.zig`: Demonstrates Argon2id password-based key derivation
+  - `file_hashing.zig`: Demonstrates Blake3 file hashing for integrity verification
+  - `custom_encryption.zig`: Complete encryption/decryption workflow example
+- Build system support for examples (`zig build examples`)
+- Individual run steps for each example (e.g., `zig build run-key_derivation`)
+- Organized documentation under `docs/` directory
+- API documentation in `docs/API.md`
+
 ### Changed
 - Improved library usage documentation with comprehensive examples
 - Added badges for Zig version, license, and version
 - Enhanced installation instructions with `zig fetch` workflow
 - Better explanation of hash/fingerprint for package integrity
+- Fixed `encryptFileStreaming()` and `decryptFileStreaming()` to use unbuffered I/O for proper library usage
+- Reorganized internal documentation into `docs/` folder
+- Updated README.md with accurate API signatures
+
+### Fixed
+- Buffered I/O issue in streaming functions that caused 0-byte encrypted files when used as library
+- Incorrect API documentation for `generateRandom()` (returns `void`, not `!void`)
+- Incorrect example code showing outdated hex formatting methods
 
 [1.0.0]: https://github.com/bkataru/raikage/releases/tag/v1.0.0

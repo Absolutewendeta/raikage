@@ -58,7 +58,7 @@ zig build run-<example-name>
 
 ## Using Raikage in Your Project
 
-To use Raikage as a library dependency, see the main [README](../README.md) for installation instructions.
+To use Raikage as a library dependency, see the [installation guide](../README.md#using-as-a-library) and [API documentation](../docs/API.md).
 
 Basic import:
 ```zig

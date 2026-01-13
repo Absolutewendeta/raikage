@@ -236,16 +236,18 @@ When using Raikage as a library, import it in your Zig code:
 const raikage = @import("raikage");
 ```
 
+For complete API documentation, see **[docs/API.md](docs/API.md)**.
+
 ### Core Functions
 
 | Function | Signature | Description |
 |----------|-----------|-------------|
 | `deriveKey` | `fn(allocator: Allocator, password: []const u8, salt: [16]u8) ![32]u8` | Derive encryption key using Argon2id with t=3, m=32MB, p=4 |
 | `hashData` | `fn(data: []const u8) [32]u8` | Compute Blake3 hash (32 bytes) of data |
-| `generateRandom` | `fn(buffer: []u8) !void` | Fill buffer with cryptographically secure random bytes |
+| `generateRandom` | `fn(buffer: []u8) void` | Fill buffer with cryptographically secure random bytes |
 | `secureZeroKey` | `fn(key: *[32]u8) void` | Securely zero key from memory using volatile writes |
-| `encryptFileStreaming` | `fn(input_file: File, output_file: File, password: []const u8, allocator: Allocator) !void` | Encrypt file with automatic streaming for large files |
-| `decryptFileStreaming` | `fn(input_file: File, output_file: File, password: []const u8, allocator: Allocator) !void` | Decrypt file with automatic streaming for large files |
+| `encryptFileStreaming` | `fn(input_file: File, output_file: File, password: []const u8, salt: [16]u8, nonce: [12]u8, allocator: Allocator) !void` | Encrypt file with streaming mode for large files |
+| `decryptFileStreaming` | `fn(input_file: File, output_file: File, password: []const u8, header: Header, allocator: Allocator) !void` | Decrypt file with streaming mode for large files |
 
 ### Constants
 
@@ -274,7 +276,7 @@ pub fn main() !void {
 
     // Generate random salt
     var salt: [raikage.SALT_LEN]u8 = undefined;
-    try raikage.generateRandom(&salt);
+    raikage.generateRandom(&salt);
 
     // Derive key from password
     const password = "my_secure_password";
@@ -306,7 +308,7 @@ pub fn main() !void {
     defer allocator.free(data);
 
     const hash = raikage.hashData(data);
-    std.debug.print("Blake3 hash: {s}\n", .{std.fmt.fmtSliceHexLower(&hash)});
+    std.debug.print("Blake3 hash: {X}\n", .{hash});
 }
 ```
 
@@ -321,20 +323,30 @@ pub fn main() !void {
     defer _ = gpa.deinit();
     const allocator = gpa.allocator();
 
+    const password = "strong_password_here";
+
+    // Generate salt and nonce
+    var salt: [raikage.SALT_LEN]u8 = undefined;
+    var nonce: [raikage.NONCE_LEN]u8 = undefined;
+    raikage.generateRandom(&salt);
+    raikage.generateRandom(&nonce);
+
+    // Encrypt file
     const input_file = try std.fs.cwd().openFile("sensitive.txt", .{});
     defer input_file.close();
 
     const output_file = try std.fs.cwd().createFile("sensitive.txt.encrypted", .{});
     defer output_file.close();
 
-    const password = "strong_password_here";
-
-    // Encrypt file using streaming mode
-    try raikage.encryptFileStreaming(input_file, output_file, password, allocator);
+    try raikage.encryptFileStreaming(input_file, output_file, password, salt, nonce, allocator);
 
     std.debug.print("File encrypted successfully!\n", .{});
 }
 ```
+
+For a complete encryption and decryption example, see the **[examples directory](examples/)**.
+
+For detailed API documentation, see **[docs/API.md](docs/API.md)**.
 
 ## File Format Specification
 
