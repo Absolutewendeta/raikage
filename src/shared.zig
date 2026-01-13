@@ -111,7 +111,7 @@ fn readPasswordHidden(allocator: Allocator, max_len: usize) ![]u8 {
         return password;
     } else {
         // Unix/Linux implementation using termios
-        const posix = std.os;
+        const posix = std.posix;
         const stdin_fd = std.fs.File.stdin().handle;
 
         // Get current terminal settings

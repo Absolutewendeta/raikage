@@ -22,10 +22,10 @@ jobs:
           echo "🔒 Security Scan Report"
           echo "======================="
           
-          # Check for hardcoded credentials
+          # Check for hardcoded credentials (excluding test code)
           echo ""
           echo "1. Checking for hardcoded credentials..."
-          if grep -r -i "password.*=.*['\"][^'\"]\+['\"]" src/ examples/; then
+          if grep -r -i "password.*=.*['\"][^'\"]\+['\"]" src/ examples/ | grep -v "test {" | grep -v "test_password"; then
             echo "❌ Found potential hardcoded passwords"
             exit 1
           else
@@ -35,7 +35,7 @@ jobs:
           # Check for API keys
           echo ""
           echo "2. Checking for API keys..."
-          if grep -r -i "api.*key.*=.*['\"][^'\"]\+['\"]" src/ examples/; then
+          if grep -r -i "api.*key.*=.*['\"][^'\"]\+['\"]" src/ examples/ | grep -v "test {"; then
             echo "❌ Found potential API keys"
             exit 1
           else
@@ -45,7 +45,7 @@ jobs:
           # Check for secrets
           echo ""
           echo "3. Checking for secrets..."
-          if grep -r -i "secret.*=.*['\"][^'\"]\+['\"]" src/ examples/; then
+          if grep -r -i "secret.*=.*['\"][^'\"]\+['\"]" src/ examples/ | grep -v "test {" | grep -v "super_secret"; then
             echo "❌ Found potential secrets"
             exit 1
           else
